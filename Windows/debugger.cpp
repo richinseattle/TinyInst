@@ -1255,6 +1255,15 @@ DebuggerStatus Debugger::HandleExceptionInternal(EXCEPTION_RECORD *exception_rec
     return DEBUGGER_CRASHED;
     break;
 
+  case 0xc0000002:
+      printf("Ignoring unhandled exception %x .. exiting target\n", exception_record->ExceptionCode);
+      HandleTargetEnded();
+      // Adding delay for target process to clean up
+      //Sleep(10);
+      dbg_continue_status = DBG_EXCEPTION_NOT_HANDLED;
+      return DEBUGGER_IGNORE_EXCEPTION;
+      break;
+
   default:
     printf("Unhandled exception %x\n", exception_record->ExceptionCode);
     dbg_continue_status = DBG_EXCEPTION_NOT_HANDLED;
